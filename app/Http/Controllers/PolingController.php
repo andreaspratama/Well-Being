@@ -11,22 +11,39 @@ use Carbon\Carbon;
 use App\Http\Requests\Admin\PolingRequest;
 use App\Http\Requests\Admin\PolingsiswaRequest;
 use Yajra\DataTables\Facades\DataTables;
+use App\Exports\PolingkExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PolingController extends Controller
 {
     public function cobadata(Request $request)
     {
-        $poling = Poling::with('siswa', 'feed')->orderBy('id', 'DESC')->where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
+        if(request()->ajax())
+        {
+            $poling = Poling::with('siswa', 'feed')->orderBy('id', 'DESC')->where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
+            if($request->filled('start_date') && $request->filled('end_date'))
+            {
+                $poling = $poling->whereBetween('tglcek', [$request->start_date, $request->end_date]);
+            }
 
-        return DataTables($poling)
+            return Datatables::of($poling)
             ->addColumn('waktu', function($item) {
                 return $item->created_at->translatedFormat('H:i:s');
             })
             ->addColumn('tanggal', function($item) {
                 return $item->created_at->format('d-m-Y');
             })
+            ->addColumn('aksi', function($item) {
+                $button = '
+                <a href="' . route('cetakPdf', $item->siswa_id) . '" class="btn btn-danger btn-sm">Cetak PDF</a>
+                ';
+                return $button;
+            })
             ->addIndexColumn()
-            ->make(true);
+            ->rawColumns(['waktu', 'tanggal', 'aksi'])
+            ->make();
+        }
     }
 
     public function cobadatabesar(Request $request)
@@ -140,9 +157,10 @@ class PolingController extends Controller
 
     public function reportKecil()
     {
-        $feed = Feed::where('status', '=', 'kecil')->get();
+        $feed = Feed::where('status', '=', 'besar')->get();
+        $siswa = Siswa::where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
 
-        return view('pages.poling.report', compact('feed'));
+        return view('pages.poling.report', compact('feed', 'siswa'));
     }
 
     public function reportBesar(Request $request)
@@ -176,5 +194,18 @@ class PolingController extends Controller
         }
 
         return view('pages.poling.reportsiswa');
+    }
+
+    public function cetakExcel(Request $request)
+    {
+        return (new PolingkExport($request->siswa_id))->download('siswa.xlsx');
+    }
+
+    public function cetakPdf($id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        $poling = Poling::orderBy('id', 'DESC')->get();
+        $pdf = PDF::loadview('pages.poling.pdf.pdfkecil', compact('poling', 'siswa'));
+        return $pdf->stream();
     }
 }

@@ -26,8 +26,8 @@
   <link href="{{url('depan/assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" /><link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
   <!-- Template Main CSS File -->
   <link href="{{url('depan/assets/css/style.css')}}" rel="stylesheet">
@@ -91,17 +91,21 @@
           <div class="form-group">
             <div class="row">
               <div class="col-lg-4">
-                <label for="exampleFormControlSelect1" style="margin-bottom: 5px; font-weight: bold">Feedback</label>
-                <select class="form-control feed" name="feed" id="feed">
-                  <option value="">-- Pilih Feedback / Reset --</option>
-                  @foreach ($feed as $fd)
-                    <option value="{{$fd->nama}}">{{$fd->nama}}</option>
+                <label for="exampleFormControlSelect1" style="margin-bottom: 5px; font-weight: bold">Sort By Name</label>
+                <select class="form-control nama" name="nama" id="nama">
+                  <option value="">-- Pilih Nama --</option>
+                  @foreach ($siswa as $sw)
+                    <option value="{{$sw->nama}}">{{$sw->nama}}</option>
                   @endforeach
                 </select>
               </div>
-              <div class="col-lg-4">
-                <label for="exampleFormControlSelect1" style="margin-bottom: 5px; font-weight: bold">Tanggal</label>
-                <input type="text" class="form-control datepicker" id="filter-tanggal" name="tanggal">
+              <div class="col-lg-4 date">
+                  <label for="exampleFormControlSelect1" style="margin-bottom: 5px; font-weight: bold; margin-top: 0px">Sort By Date</label>
+                  <div id="daterange" class="float-end" style="background: #fff; cursor: pointer; padding: 6px 10px; border: 1px solid #ccc; width: 100%; text-align: center; border-radius: 6px">
+                      <i class="fa fa-calender"></i>&nbsp;
+                      <span></span> 
+                      <i class="fa fa-caret-down"></i>
+                  </div>
               </div>
             </div>
           </div>
@@ -115,10 +119,11 @@
                     <th class="text-center" style="width: 5%;">No</th>
                     <th class="text-center" style="width: 20%;">Nama</th>
                     <th class="text-center" style="width: 10%;">Feedback</th>
-                    <th class="text-center" style="width: 30%;">Cerita</th>
+                    <th class="text-center" style="width: 20%;">Cerita</th>
                     <th class="text-center" style="width: 5%;">Kelas</th>
                     <th class="text-center" style="width: 15%;">Waktu</th>
                     <th class="text-center" style="width: 15%;">Tanggal</th>
+                    <th class="text-center" style="width: 20%;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -166,6 +171,8 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
       
     </script>
@@ -197,6 +204,21 @@
         });
     </script> --}}
     <script>
+    var start_date = moment().subtract(1, 'M');
+      
+      var end_date = moment();
+      
+      $(".date #daterange span").html(start_date.format('DD-MM-YYYY') + ' - ' + end_date.format('DD-MM-YYYY'));
+      
+      $(".date #daterange").daterangepicker({
+          startDate : start_date,
+          endDate : end_date
+      }, function(start_date, end_date) {
+          $(".date #daterange span").html(start_date.format('DD-MM-YYYY') + ' - ' + end_date.format('DD-MM-YYYY'));
+          
+          table.draw();
+      })
+
     let table = $('#table').DataTable( {
                       processing: true,
                       serverSide: true,
@@ -204,7 +226,8 @@
                         url: '{{route('ambildata')}}',
                         data: function(d){
                           d.feed_id = $('#feed').val();
-                          d.tanggal = $('#filter-tanggal').val();
+                          d.start_date = $('#daterange').data("daterangepicker").startDate.format('YYYY-MM-DD');
+                          d.end_date = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
                         }
                       },
                       columns: [
@@ -214,14 +237,12 @@
                         {data: "cerita"},
                         {data: "kelas"},
                         {data: "waktu"},
-                        {data: "tanggal"}
+                        {data: "tanggal"},
+                        {data: "aksi", orderable: false, searchable: false},
                       ]
                   } );
-      $('#filter-tanggal').change(function() {
-        table.column(6).search($(this).val()).draw();
-      })
-      $('#feed').change(function() {
-        table.column(2).search($(this).val()).draw();
+      $('#nama').change(function() {
+        table.column(1).search($(this).val()).draw();
       })
     </script>
     <script>
