@@ -118,6 +118,7 @@ Route::group(['middleware' => ['auth', 'check:guru,siswa']], function(){
 Route::group(['middleware' => ['auth', 'check:guru']], function(){
     Route::get('cetakExcel/{siswa_id}', [PolingController::class, 'cetakExcel'])->name('cetakExcel');
     Route::get('cetakPdf/{id}', [PolingController::class, 'cetakPdf'])->name('cetakPdf');
+    Route::get('cetakPdfBesar/{nama}', [PolingController::class, 'cetakPdfBesar'])->name('cetakPdfBesar');
 });
 
 Auth::routes();

@@ -152,7 +152,7 @@
             },
             columns: [
                 { data: 'number', name: 'number' },
-                { data: 'nama', name: 'nama' },
+                { data: 'siswa_id', name: 'siswa_id' },
                 { data: 'feed_id', name: 'feed_id' },
                 { data: 'kelas', name: 'kelas' },
                 { data: 'cerita', name: 'cerita' },

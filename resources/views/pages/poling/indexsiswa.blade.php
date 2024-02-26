@@ -96,7 +96,7 @@
               @if ($cektgl)
                 <h4>Terimakasih sudah mengisi feedback, besok isi lagi :)</h4>
               @else
-                @if ($waktuCek >= '11:30:00')
+                @if ($waktuCek >= '07:30:00')
                     <form action="{{route('polingStoreSiswa')}}" method="POST" enctype="multipart/form-data">
                       @csrf
                       <div class="row push">

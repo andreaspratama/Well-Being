@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Poling;
 use App\Models\Polingdua;
 use App\Models\Siswa;
@@ -48,21 +49,31 @@ class PolingController extends Controller
 
     public function cobadatabesar(Request $request)
     {
-        $poling = Polingdua::with('feed', 'siswa')->orderBy('id', 'DESC')->where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
-        if($request->filled('start_date') && $request->filled('end_date'))
+        if(request()->ajax())
         {
-            $poling = $poling->whereBetween('tglcek', [$request->start_date, $request->end_date]);
-        }
+            $poling = Polingdua::with('feed', 'siswa')->orderBy('id', 'DESC')->where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
+            if($request->filled('start_date') && $request->filled('end_date'))
+            {
+                $poling = $poling->whereBetween('tglcek', [$request->start_date, $request->end_date]);
+            }
 
-        return DataTables($poling)
+            return Datatables::of($poling)
             ->addColumn('waktu', function($item) {
                 return $item->created_at->translatedFormat('H:i:s');
             })
             ->addColumn('tanggal', function($item) {
                 return $item->created_at->format('d-m-Y');
             })
+            ->addColumn('aksi', function($item) {
+                $button = '
+                <a href="' . route('cetakPdfBesar', $item->siswa_id) . '" class="btn btn-danger btn-sm">Cetak PDF</a>
+                ';
+                return $button;
+            })
             ->addIndexColumn()
-            ->make(true);
+            ->rawColumns(['waktu', 'tanggal', 'aksi'])
+            ->make();
+        }
     }
 
     public function home()
@@ -98,8 +109,8 @@ class PolingController extends Controller
         $feed = Feed::where('status', '=', 'besar')->get();
         $tgl = Carbon::now()->translatedFormat('l, d M Y');
         $tanggal = Carbon::now()->toDateString();
-        $ceknama = auth()->user()->name;
-        $cektgl = Polingdua::where('tglcek', $tanggal)->where('nama', $ceknama)->first();
+        $ceknama = auth()->user()->siswa[0]->id;
+        $cektgl = Polingdua::where('tglcek', $tanggal)->where('siswa_id', $ceknama)->first();
         $waktu = Carbon::now();
         $waktuCek = $waktu->toTimeString();
 
@@ -123,7 +134,7 @@ class PolingController extends Controller
         $data['tglcek'] = Carbon::now()->toDateString();
         $data['kelas'] = auth()->user()->guru[0]->kelas;
         $data['unit'] = auth()->user()->guru[0]->unit;
-        $data['nama'] = $request->nama;
+        $data['siswa_id'] = $request->siswa_id;
         Polingdua::create($data);
         
         return redirect()->route('polingTq');
@@ -131,15 +142,16 @@ class PolingController extends Controller
 
     public function storeSiswa(PolingsiswaRequest $request)
     {
-        $ceknama = auth()->user()->name;
+        $ceknama = auth()->user()->siswa[0]->id;
         $tanggal = Carbon::now()->toDateString();
-        $cektgl = Polingdua::where('tglcek', $tanggal)->where('nama', $ceknama)->first();
+        $cektgl = Polingdua::where('tglcek', $tanggal)->where('siswa_id', $ceknama)->first();
         
         $data = $request->all();
         $data['tglcek'] = Carbon::now()->toDateString();
-        $data['nama'] = auth()->user()->name;
+        $data['siswa_id'] = auth()->user()->siswa[0]->id;
         $data['kelas'] = auth()->user()->siswa[0]->kelas;
         $data['unit'] = auth()->user()->siswa[0]->unit;
+        $data['siswa_id'] = auth()->user()->siswa[0]->id;
         
         if($cektgl) {
             return redirect()->route('polingTq');
@@ -157,13 +169,13 @@ class PolingController extends Controller
 
     public function reportKecil()
     {
-        $feed = Feed::where('status', '=', 'besar')->get();
+        $feed = Feed::where('status', '=', 'kecil')->get();
         $siswa = Siswa::where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
 
         return view('pages.poling.report', compact('feed', 'siswa'));
     }
 
-    public function reportBesar(Request $request)
+    public function reportBesar()
     {
         $feed = Feed::where('status', '=', 'besar')->get();
         $siswa = Siswa::where('kelas', '=', auth()->user()->guru[0]->kelas)->get();
@@ -176,12 +188,15 @@ class PolingController extends Controller
         if(request()->ajax())
         {
             
-            $query = Polingdua::where('nama', '=', auth()->user()->siswa[0]->nama)->orderBy('id', 'DESC');
+            $query = Polingdua::where('siswa_id', '=', auth()->user()->siswa[0]->id)->orderBy('id', 'DESC');
 
             return Datatables::of($query)
                 ->addColumn('number', function($item) {
                     static $count = 0;
                     return ++$count;
+                })
+                ->addColumn('siswa_id', function($item) {
+                    return $item->siswa->nama;
                 })
                 ->addColumn('feed_id', function($item) {
                     return $item->feed->nama;
@@ -189,7 +204,7 @@ class PolingController extends Controller
                 ->addColumn('waktu', function($item) {
                     return $item->created_at->translatedFormat('l, d M Y H:i:s');
                 })
-                ->rawColumns(['number', 'feed_id', 'waktu'])
+                ->rawColumns(['number', 'siswa_id', 'feed_id', 'waktu'])
                 ->make();
         }
 
@@ -206,6 +221,14 @@ class PolingController extends Controller
         $siswa = Siswa::findOrFail($id);
         $poling = Poling::orderBy('id', 'DESC')->get();
         $pdf = PDF::loadview('pages.poling.pdf.pdfkecil', compact('poling', 'siswa'));
+        return $pdf->stream();
+    }
+
+    public function cetakPdfBesar($id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        $poling = Polingdua::orderBy('id', 'DESC')->get();
+        $pdf = PDF::loadview('pages.poling.pdf.pdfbesar', compact('poling', 'siswa'));
         return $pdf->stream();
     }
 }

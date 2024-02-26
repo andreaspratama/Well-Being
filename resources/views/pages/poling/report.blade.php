@@ -176,35 +176,8 @@
     <script>
       
     </script>
-    {{-- <script>
-        var datatable = $('#table').DataTable({
-            processing: true,
-            serverSide: true,
-            ordering: true,
-            ajax: {
-                url: '{!! url()->current() !!}',
-            },
-            columns: [
-                { data: 'number', name: 'number' },
-                { data: 'siswa.nama', name: 'siswa.nama' },
-                { data: 'feed.nama', name: 'feed.nama' },
-                { data: 'cerita', name: 'cerita' },
-                { data: 'kelas', name: 'kelas' },
-                { data: 'waktu', name: 'waktu' },
-            ]
-        })
-
-        $('#feed').change(function() {
-          datatable.column(3).search($(this).val()).draw();
-        });
-    </script>
     <script>
-        $(document).ready(function () {
-            $('#table').DataTable();
-        });
-    </script> --}}
-    <script>
-    var start_date = moment().subtract(1, 'M');
+      var start_date = moment().subtract(1, 'M');
       
       var end_date = moment();
       
@@ -219,7 +192,7 @@
           table.draw();
       })
 
-    let table = $('#table').DataTable( {
+      let table = $('#table').DataTable( {
                       processing: true,
                       serverSide: true,
                       ajax: {

@@ -106,11 +106,11 @@
                   <div class="col-lg-8 col-xl-5">
                     <div class="mb-4">
                       <label class="form-label" for="example-select" style="margin-bottom: 10px; font-weight: bold; text-transform: uppercase">Nama <span style="color: red; font-size: 10px">(*Wajib Diisi)</span></label>
-                      <select class="form-select @error('siswa_id') is-invalid @enderror" id="example-select" name="nama" required>
+                      <select class="form-select @error('siswa_id') is-invalid @enderror" id="example-select" name="siswa_id" required>
                         <option selected="">-- Silahkan Pilih Nama --</option>
                         @foreach ($siswa as $sw)
                             @if (auth()->user()->guru[0]->kelas === $sw->kelas)
-                                <option value="{{$sw->nama}}">{{$sw->nama}}</option>
+                                <option value="{{$sw->id}}">{{$sw->nama}}</option>
                             @endif
                         @endforeach
                       </select>

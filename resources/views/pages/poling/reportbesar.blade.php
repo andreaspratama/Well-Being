@@ -121,10 +121,11 @@
                     <th class="text-center" style="width: 5%;">No</th>
                     <th class="text-center" style="width: 20%;">Nama</th>
                     <th class="text-center" style="width: 10%;">Feedback</th>
-                    <th class="text-center" style="width: 30%;">Cerita</th>
+                    <th class="text-center" style="width: 20%;">Cerita</th>
                     <th class="text-center" style="width: 5%;">Kelas</th>
                     <th class="text-center" style="width: 15%;">Waktu</th>
                     <th class="text-center" style="width: 15%;">Tanggal</th>
+                    <th class="text-center" style="width: 20%;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -232,12 +233,13 @@
                         },
                         columns: [
                           {data: "DT_RowIndex", orderable: false, searchable: false},
-                          {data: "nama"},
+                          {data: "siswa.nama"},
                           {data: "feed.nama"},
                           {data: "cerita"},
                           {data: "kelas"},
                           {data: "waktu"},
-                          {data: "tanggal"}
+                          {data: "tanggal"},
+                          {data: "aksi"},
                         ]
                     } );
     //   $('#daterange').change(function() {
