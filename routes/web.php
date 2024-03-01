@@ -10,6 +10,7 @@ use App\Http\Controllers\PolingController;
 use App\Http\Controllers\Admin\ReportadminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\SignController;
+use App\Http\Controllers\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +101,15 @@ Route::group(['middleware' => ['auth', 'check:guru']], function(){
     Route::post('polingStoreBesar', [PolingController::class, 'storeBesar'])->name('polingStoreBesar');
     Route::get('polingReportKecil', [PolingController::class, 'reportKecil'])->name('polingReportKecil');
     Route::get('polingReportBesar', [PolingController::class, 'reportBesar'])->name('polingReportBesar');
+
+    // Cetak PDF
+    Route::get('cetakPdf/{id}', [PolingController::class, 'cetakPdf'])->name('cetakPdf');
+    Route::get('cetakPdfBesar/{id}', [PolingController::class, 'cetakPdfBesar'])->name('cetakPdfBesar');
+
+    // Report Per Siswa
+    Route::get('reportPerSiswa', [PolingController::class, 'reportPerSiswa'])->name('reportPerSiswa');
+    Route::get('ambilDataSiswa', [PolingController::class, 'ambilDataSiswa'])->name('ambilDataSiswa');
+    Route::get('detailSiswa/{id}', [PolingController::class, 'detailSiswa'])->name('detailSiswa');
 });
 
 Route::group(['middleware' => ['auth', 'check:siswa']], function(){
@@ -110,15 +120,10 @@ Route::group(['middleware' => ['auth', 'check:siswa']], function(){
 });
 
 Route::group(['middleware' => ['auth', 'check:guru,siswa']], function(){
-    Route::get('homePoling', [PolingController::class, 'home'])->name('homePoling');\
+    Route::get('homePoling', [PolingController::class, 'home'])->name('homePoling');
     Route::get('polingTq', [PolingController::class, 'tq'])->name('polingTq');
-});
-
-// CETAK EXCEL
-Route::group(['middleware' => ['auth', 'check:guru']], function(){
-    Route::get('cetakExcel/{siswa_id}', [PolingController::class, 'cetakExcel'])->name('cetakExcel');
-    Route::get('cetakPdf/{id}', [PolingController::class, 'cetakPdf'])->name('cetakPdf');
-    Route::get('cetakPdfBesar/{nama}', [PolingController::class, 'cetakPdfBesar'])->name('cetakPdfBesar');
+    Route::get('gantiPass', [PasswordController::class, 'index'])->name('gantiPass');
+    Route::post('gantiPassPros', [PasswordController::class, 'gantiPassPros'])->name('gantiPassPros');
 });
 
 Auth::routes();

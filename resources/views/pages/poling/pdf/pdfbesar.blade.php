@@ -9,33 +9,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <title>Hello, world!</title>
-    <style>
-      .h-full {
-        width: 100%;
-        margin-bottom: 15px;
-      }
-
-      .h-half-text p {
-        text-align: center;
-        font-size: 22px;
-        font-weight: bold;
-      }
-
-      .h-half-text .sekol {
-        text-align: center;
-        font-size: 19px;
-        font-weight: bold;
-      }
-    </style>
   </head>
   <body>
+    <?php
+        $logos = storage_path("app/public/assets/gambar/logo.png")
+    ?>
     <table class="h-full">
       <tr>
         <td class="h-half-text">
+          <img src="{{$logos}}" alt="" style="width: 70px; position: absolute; height: auto">
           <p>
             Hasil Laporan <i>Well Being</i> Semester 2
             <br>
-            SD Kristen 2 YSKI
+            @if ($siswa->unit === 'SMA')
+                SMA Kristen YSKI
+            @elseif ($siswa->unit === 'SMP')
+                SMP Kristen YSKI
+            @elseif ($siswa->unit === 'K3')
+                SD Kristen 3 YSKI
+            @elseif ($siswa->unit === 'K2')
+                SD Kristen 2 YSKI
+            @elseif ($siswa->unit === 'K1')
+                SD Kristen 1 YSKI
+            @else
+                Tidak ada
+            @endif
             <br>
             Tahun Ajaran 2023/2024
           </p>
@@ -81,6 +79,7 @@
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--

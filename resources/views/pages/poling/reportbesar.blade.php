@@ -58,7 +58,13 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link scrollto " href="{{route('homePoling')}}">Home</a></li>
-          <li><a class="nav-link scrollto" href="{{route('polingReportBesar')}}" style="margin-right: 20px">Report</a></li>
+          <li class="dropdown"><a href="#"><span>Report</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a class="nav-link scrollto" href="{{route('polingReportBesar')}}" style="margin-right: 20px">Report Semua Siswa</a></li>
+              <li><a href="{{route('reportPerSiswa')}}">Report Per Siswa</a></li>
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="{{route('gantiPass')}}" style="margin-right: 20px">Ganti Password</a></li>
           <li>
             <form action="{{route('logout')}}" method="POST">
                 @csrf
@@ -125,7 +131,6 @@
                     <th class="text-center" style="width: 5%;">Kelas</th>
                     <th class="text-center" style="width: 15%;">Waktu</th>
                     <th class="text-center" style="width: 15%;">Tanggal</th>
-                    <th class="text-center" style="width: 20%;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -239,7 +244,6 @@
                           {data: "kelas"},
                           {data: "waktu"},
                           {data: "tanggal"},
-                          {data: "aksi"},
                         ]
                     } );
     //   $('#daterange').change(function() {

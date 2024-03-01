@@ -52,7 +52,25 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link scrollto " href="{{route('homePoling')}}">Home</a></li>
-          <li><a class="nav-link scrollto" href="{{route('polingReportSiswa')}}" style="margin-right: 20px">Report</a></li>
+          <li class="dropdown"><a href="#"><span>Report</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li>
+                @if (auth()->user()->role === 'guru')
+                    @if (auth()->user()->guru[0]->status === 'kecil')
+                        <a class="nav-link scrollto" href="{{route('polingReportKecil')}}">Report Semua Siswa</a>
+                    @else
+                        <a class="nav-link scrollto" href="{{route('polingReportBesar')}}">Report Semua Siswa</a>
+                    @endif
+                @else
+                    <a class="nav-link scrollto" href="{{route('polingReportSiswa')}}">Report</a>
+                @endif
+              </li>
+              @if (auth()->user()->role === 'guru')
+                  <li><a href="{{route('reportPerSiswa')}}">Report Per Siswa</a></li>                  
+              @endif
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="{{route('gantiPass')}}" style="margin-right: 20px">Ganti Password</a></li>
           <li>
             <form action="{{route('logout')}}" method="POST">
                 @csrf

@@ -78,14 +78,15 @@
           <li>
             @if (auth()->user()->role === 'guru')
                 @if (auth()->user()->guru[0]->status === 'kecil')
-                    <a class="nav-link scrollto" href="{{route('polingReportKecil')}}" style="margin-right: 20px">Report</a>
+                    <a class="nav-link scrollto" href="{{route('polingReportKecil')}}">Report</a>
                 @else
-                    <a class="nav-link scrollto" href="{{route('polingReportBesar')}}" style="margin-right: 20px">Report</a>
+                    <a class="nav-link scrollto" href="{{route('polingReportBesar')}}">Report</a>
                 @endif
             @else
-                <a class="nav-link scrollto" href="#" style="margin-right: 20px">Report</a>
+                <a class="nav-link scrollto" href="#">Report</a>
             @endif
           </li>
+          <li><a class="nav-link scrollto" href="{{route('gantiPass')}}" style="margin-right: 20px">Ganti Password</a></li>
           <li>
             <form action="{{route('logout')}}" method="POST">
                 @csrf
