@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth', 'check:guru']], function(){
     Route::get('reportPerSiswa', [PolingController::class, 'reportPerSiswa'])->name('reportPerSiswa');
     Route::get('ambilDataSiswa', [PolingController::class, 'ambilDataSiswa'])->name('ambilDataSiswa');
     Route::get('detailSiswa/{id}', [PolingController::class, 'detailSiswa'])->name('detailSiswa');
+    Route::get('detailSiswaKecil/{id}', [PolingController::class, 'detailSiswaKecil'])->name('detailSiswaKecil');
 });
 
 Route::group(['middleware' => ['auth', 'check:siswa']], function(){

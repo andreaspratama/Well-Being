@@ -108,7 +108,34 @@
                       <span class="nav-main-link-name">Kelas Besar</span>
                     </a>
                     <ul class="nav-main-submenu">
-                      @if (auth()->user()->role === 'admin' || 'manajerial')
+                      @if (auth()->user()->role === 'admin')
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportSMA')}}">
+                            <span class="nav-main-link-name">SMA</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportSMP')}}">
+                            <span class="nav-main-link-name">SMP</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportK3')}}">
+                            <span class="nav-main-link-name">K3</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportK2')}}">
+                            <span class="nav-main-link-name">K2</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportK1')}}">
+                            <span class="nav-main-link-name">K1</span>
+                          </a>
+                        </li>
+                      @endif
+                      @if (auth()->user()->role === 'manajerial')
                         <li class="nav-main-item">
                           <a class="nav-main-link" href="{{route('reportSMA')}}">
                             <span class="nav-main-link-name">SMA</span>
@@ -142,25 +169,25 @@
                               <span class="nav-main-link-name">SMA</span>
                             </a>
                           </li>
-                        @elseif(auth()->user()->pimpinan[0]->unit === 'SMP')
+                        @elseif (auth()->user()->pimpinan[0]->unit === 'SMP')
                           <li class="nav-main-item">
                             <a class="nav-main-link" href="{{route('reportSMP')}}">
                               <span class="nav-main-link-name">SMP</span>
                             </a>
                           </li>
-                        @elseif(auth()->user()->pimpinan[0]->unit === 'K3')
+                        @elseif (auth()->user()->pimpinan[0]->unit === 'K3')
                           <li class="nav-main-item">
                             <a class="nav-main-link" href="{{route('reportK3')}}">
                               <span class="nav-main-link-name">K3</span>
                             </a>
                           </li>
-                        @elseif(auth()->user()->pimpinan[0]->unit === 'K2')
+                        @elseif (auth()->user()->pimpinan[0]->unit === 'K2')
                           <li class="nav-main-item">
                             <a class="nav-main-link" href="{{route('reportK2')}}">
                               <span class="nav-main-link-name">K2</span>
                             </a>
                           </li>
-                        @elseif(auth()->user()->pimpinan[0]->unit === 'K1')
+                        @else
                           <li class="nav-main-item">
                             <a class="nav-main-link" href="{{route('reportK1')}}">
                               <span class="nav-main-link-name">K1</span>
@@ -171,11 +198,50 @@
                     </ul>
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
-                      <span class="nav-main-link-name">Kelas Kecil</span>
-                    </a>
+                    @if (auth()->user()->role === 'admin')
+                      <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <span class="nav-main-link-name">Kelas Kecil</span>
+                      </a>
+                    @endif
+                    @if (auth()->user()->role === 'manajerial')
+                      <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <span class="nav-main-link-name">Kelas Kecil</span>
+                      </a>
+                    @endif
+                    @if (auth()->user()->role === 'pimpinan')
+                      @if (auth()->user()->pimpinan[0]->unit === 'K1')
+                      <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                        <span class="nav-main-link-name">Kelas Kecil</span>
+                      </a>
+                      @elseif (auth()->user()->pimpinan[0]->unit === 'K2')
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                          <span class="nav-main-link-name">Kelas Kecil</span>
+                        </a>
+                      @elseif (auth()->user()->pimpinan[0]->unit === 'K3')
+                        <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                          <span class="nav-main-link-name">Kelas Kecil</span>
+                        </a>
+                      @endif
+                    @endif
                     <ul class="nav-main-submenu">
-                      @if (auth()->user()->role === 'admin' || 'manajerial')
+                      @if (auth()->user()->role === 'admin')
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportKecilK3')}}">
+                            <span class="nav-main-link-name">K3</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportKecilK2')}}">
+                            <span class="nav-main-link-name">K2</span>
+                          </a>
+                        </li>
+                        <li class="nav-main-item">
+                          <a class="nav-main-link" href="{{route('reportKecilK1')}}">
+                            <span class="nav-main-link-name">K1</span>
+                          </a>
+                        </li>
+                      @endif
+                      @if (auth()->user()->role === 'manajerial')
                         <li class="nav-main-item">
                           <a class="nav-main-link" href="{{route('reportKecilK3')}}">
                             <span class="nav-main-link-name">K3</span>

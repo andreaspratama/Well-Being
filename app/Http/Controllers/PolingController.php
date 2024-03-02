@@ -250,6 +250,7 @@ class PolingController extends Controller
         return view('pages.poling.PerSiswa.index', compact('siswa'));
     }
 
+    // Report Per Siswa Besar
     public function ambilDataSiswa(Request $request)
     {
         if(request()->ajax())
@@ -258,9 +259,16 @@ class PolingController extends Controller
 
             return Datatables::of($siswa)
             ->addColumn('aksi', function($item) {
-                $button = '
-                <a href="' . route('detailSiswa', $item->id) . '" class="btn btn-danger btn-sm">Detail</a>
-                ';
+                if (auth()->user()->guru[0]->status === 'besar') {
+                    $button = '
+                    <a href="' . route('detailSiswa', $item->id) . '" class="btn btn-danger btn-sm">Detail</a>
+                    ';
+                } else {
+                    $button = '
+                    <a href="' . route('detailSiswaKecil', $item->id) . '" class="btn btn-danger btn-sm">Detail</a>
+                    ';
+                }
+                
                 return $button;
             })
             ->addIndexColumn()
@@ -269,6 +277,7 @@ class PolingController extends Controller
         }
     }
 
+    // Detail Siswa Besar
     public function detailSiswa($id)
     {
         $item = Siswa::findOrFail($id);
@@ -301,5 +310,28 @@ class PolingController extends Controller
         $vb_perc = $vb_count / 5 * 100;
         
         return view('pages.poling.PerSiswa.show', compact('item', 'exc_count', 'good_count', 'medium_count', 'bad_count', 'vb_count', 'hasil'));
+    }
+
+    // Detail Siswa Kecil
+    public function detailSiswaKecil($id)
+    {
+        $item = Siswa::findOrFail($id);
+
+        // Good
+        $good = $item->poling->where('feed_id', '15');
+        $good_count = count($good);
+        $good_perc = $good_count / 5 * 100;
+
+        // Medium
+        $medium = $item->poling->where('feed_id', '16');
+        $medium_count = count($medium);
+        $medium_perc = $medium_count / 5 * 100;
+
+        // Bad
+        $bad = $item->poling->where('feed_id', '17');
+        $bad_count = count($bad);
+        $bad_perc = $bad_count / 5 * 100;
+        
+        return view('pages.poling.PerSiswa.showKecil', compact('item', 'good_count', 'medium_count', 'bad_count'));
     }
 }

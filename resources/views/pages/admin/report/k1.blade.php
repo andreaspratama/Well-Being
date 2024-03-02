@@ -111,7 +111,7 @@
                           },
                           columns: [
                             {data: "DT_RowIndex", orderable: false, searchable: false},
-                            {data: "nama"},
+                            {data: "siswa.nama"},
                             {data: "unit"},
                             {data: "feed.nama"},
                             {data: "kelas"},
